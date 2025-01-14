@@ -1,6 +1,10 @@
 from typing import Iterator, Optional, Dict, Type, List
 from llm import Model, Prompt, Response, Conversation
 from groq import Groq
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class GroqModel(Model):
     model_id: str
@@ -67,13 +71,11 @@ class Options(Model.Options):
     top_p: Optional[float] = 1.0
     # Add other Groq-specific parameters as needed
 
-
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 SUPPORTED_MODELS = [
-    "mixtral-8x7b-32768",
-    "llama-3.3-70b-versatile",
-    "gemma2-9b-it",
-    "llama-3.1-8b-instant",
+    model.id for model in client.models.list().data
 ]
+client = None;
 
 _models: Dict[str, Type[GroqModel]] = {}
 
